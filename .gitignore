@@ -1,0 +1,67 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+.vscode/
+
+# Dart and Flutter generated files
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+coverage/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+app.*.symbols
+app.*.map.json
+# Keep pubspec.lock tracked for this application.
+
+# Android local and generated files
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+**/android/key.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# Apple local and generated files
+**/ios/Pods/
+**/macos/Pods/
+**/ios/.symlinks/
+**/macos/.symlinks/
+**/Flutter/ephemeral/
+**/ios/Flutter/App.framework/
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/DerivedData/
+**/xcuserdata/
+*.xcuserstate
+
+# Desktop generated files
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# Secrets and signing material
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+
+# Logs
+*.log
