@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/constructly_theme.dart';
 import '../../../core/widgets/dashboard_widgets.dart';
+import '../../../repositories/auth_repository.dart';
 import '../../apartments/presentation/apartment_list_screen.dart';
 import '../../auth/presentation/login_screen.dart';
 import '../../finance/presentation/cost_tracking_screen.dart';
@@ -9,7 +10,14 @@ import '../../finance/presentation/supplier_screen.dart';
 import '../../finance/presentation/worker_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({
+    super.key,
+    this.userName = 'Mert',
+    this.isDemo = true,
+  });
+
+  final String userName;
+  final bool isDemo;
 
   void _open(BuildContext context, Widget screen) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => screen));
@@ -23,7 +31,11 @@ class DashboardScreen extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: 'Çıkış yap',
-            onPressed: () {
+            onPressed: () async {
+              if (!isDemo) {
+                await FirebaseAuthRepository().signOut();
+              }
+              if (!context.mounted) return;
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
                 (_) => false,
@@ -44,7 +56,7 @@ class DashboardScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Merhaba, Mert',
+                    'Merhaba, $userName',
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 6),
@@ -142,9 +154,15 @@ class DashboardScreen extends StatelessWidget {
                           color: ConstructlyColors.blue,
                         ),
                       ),
-                      title: const Text('Firebase bağlantısı hazırlanıyor'),
-                      subtitle: const Text(
-                        'Servis ve veri modelleri hazırlandı. Canlı proje yapılandırması tamamlandığında bu demo verileri Firestore’dan gelecektir.',
+                      title: Text(
+                        isDemo
+                            ? 'Demo verileri görüntüleniyor'
+                            : 'Firebase bağlantısı etkin',
+                      ),
+                      subtitle: Text(
+                        isDemo
+                            ? 'Gerçek Authentication ve Firestore bağlantısını denemek için oluşturulan kullanıcıyla giriş yapın.'
+                            : 'Kullanıcı Firebase Authentication ile doğrulandı. Sıradaki adım ekran verilerini Firestore koleksiyonlarına bağlamaktır.',
                       ),
                     ),
                   ),

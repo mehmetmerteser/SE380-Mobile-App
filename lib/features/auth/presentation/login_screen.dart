@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/theme/constructly_theme.dart';
+import '../../../repositories/auth_repository.dart';
 import '../../dashboard/presentation/dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _hidePassword = true;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -29,10 +33,53 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      _openDemo();
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final profile = await FirebaseAuthRepository().signIn(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (_) =>
+              DashboardScreen(userName: profile.name, isDemo: false),
+        ),
+      );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      setState(() => _errorMessage = _authErrorMessage(error.code));
+    } on StateError catch (error) {
+      if (!mounted) return;
+      setState(() => _errorMessage = error.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(
+        () => _errorMessage = 'Giriş sırasında beklenmeyen bir hata oluştu.',
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _authErrorMessage(String code) {
+    return switch (code) {
+      'invalid-credential' ||
+      'user-not-found' ||
+      'wrong-password' => 'E-posta veya şifre hatalı.',
+      'invalid-email' => 'E-posta adresi geçersiz.',
+      'too-many-requests' =>
+        'Çok fazla giriş denemesi yapıldı. Lütfen daha sonra tekrar deneyin.',
+      'network-request-failed' => 'İnternet bağlantısını kontrol edin.',
+      _ => 'Giriş yapılamadı. Lütfen tekrar deneyin.',
+    };
   }
 
   @override
@@ -111,9 +158,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               ),
                               const SizedBox(height: 22),
+                              if (_errorMessage != null) ...[
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: ConstructlyColors.danger.withValues(
+                                      alpha: 0.08,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    _errorMessage!,
+                                    style: const TextStyle(
+                                      color: ConstructlyColors.danger,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                              ],
                               FilledButton(
-                                onPressed: _submit,
-                                child: const Text('Giriş yap'),
+                                onPressed: _isLoading ? null : _submit,
+                                child: _isLoading
+                                    ? const SizedBox.square(
+                                        dimension: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text('Giriş yap'),
                               ),
                               const SizedBox(height: 12),
                               OutlinedButton(
@@ -128,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               const SizedBox(height: 18),
                               const Text(
-                                'Gerçek kullanıcı girişi Firebase projesi bağlandıktan sonra etkinleştirilecektir.',
+                                'Canlı giriş Firebase Authentication ile korunur. Arayüzü kullanıcı oluşturmadan incelemek için demo seçeneğini kullanabilirsiniz.',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.black54,

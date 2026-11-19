@@ -1,0 +1,25 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "constructly-se380",
+          "appId": "1:450215776:android:be98df1e1eb500fc062805",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "constructly-se380",
+          "configurations": {
+            "android": "1:450215776:android:be98df1e1eb500fc062805",
+            "web": "1:450215776:web:de0c0e5c9118e30c062805"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
