@@ -10,29 +10,59 @@ The application topic, requirements, and supported platforms will be defined by 
 
 ## Current status
 
-Initial repository setup only. No application features or runnable Flutter scaffold have been implemented yet.
+Constructly now includes a runnable Flutter scaffold for Android, iOS, and web,
+an initial responsive interface, and a Firebase-connected data layer.
+
+Implemented UI work:
+
+- Login and demo access flow
+- Project dashboard and reusable design components
+- Apartment list and apartment detail screens
+- Cost, supplier, and worker management screens
+- Navigation between the main features
+
+Implemented backend preparation:
+
+- Android and web Firebase configuration
+- Live e-mail/password authentication and profile lookup
+- Firebase Core, Authentication, and Cloud Firestore dependencies
+- User roles and application data models
+- Authentication, project, apartment, and financial repositories
+- Initial Firestore schema documentation and security rules
+
+Authentication is live on Android and web. Dashboard, apartment, cost, supplier,
+and worker screens still use sample records while their Firestore repositories
+are integrated. iOS Firebase configuration is planned for the next iteration.
 
 ## Repository structure
 
 ```text
 SE380-Mobile-App/
-├── assets/       # Future images, fonts, and other application assets
-├── docs/         # Requirements, design notes, and course documentation
-├── lib/          # Future Dart application source code
-├── test/         # Future automated tests
-├── .gitignore    # Flutter, Dart, platform, and local configuration exclusions
+├── android/      # Android application host
+├── ios/          # iOS application host
+├── web/          # Chrome/web application host
+├── docs/         # Database and design documentation
+├── lib/
+│   ├── app/      # Application root
+│   ├── core/     # Theme, widgets, and Firebase bootstrap
+│   ├── features/ # UI screens grouped by feature
+│   ├── models/   # Application data models
+│   └── repositories/ # Firebase data access layer
+├── test/         # Widget and model tests
+├── firestore.rules
+├── firebase.json
+├── pubspec.yaml
 └── README.md
 ```
 
-Empty directories contain `.gitkeep` placeholders so they can be tracked by Git. Replace these placeholders as files are added.
-
-## Future development setup
+## Development setup
 
 1. Install the Flutter SDK, which includes Dart, and the tools for the platforms selected by the team.
 2. Run `flutter doctor` to verify the development environment.
 3. Clone this repository and switch to the `main` branch.
-4. When development begins, generate the Flutter scaffold in the repository root using the Dart-compatible project name `se380_mobile_app` and the team's selected platforms. Review generated changes and preserve this README and ignore rules.
-5. Once the scaffold and `pubspec.yaml` exist, use `flutter pub get`, `flutter analyze`, and `flutter test` to prepare and check the project.
+4. Run `flutter pub get`.
+5. Use `flutter run -d chrome` for the web preview or select an Android/iOS device.
+6. Run `flutter analyze` and `flutter test` before opening a pull request.
 
 Commit `pubspec.lock` once generated to keep application dependency versions consistent. Declare assets in `pubspec.yaml` when they are introduced.
 

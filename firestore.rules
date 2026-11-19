@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return signedIn() && userData().role == 'admin';
+    }
+
+    function canAccessProject(projectId) {
+      return signedIn() && (
+        isAdmin() ||
+        request.auth.uid in get(
+          /databases/$(database)/documents/projects/$(projectId)
+        ).data.memberIds
+      );
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if signedIn() && request.auth.uid == userId;
+      allow update: if isAdmin() || (
+        signedIn() &&
+        request.auth.uid == userId &&
+        request.resource.data.role == resource.data.role
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /projects/{projectId} {
+      allow read: if canAccessProject(projectId);
+      allow create, update, delete: if isAdmin();
+
+      match /apartments/{apartmentId} {
+        allow read: if canAccessProject(projectId);
+        allow write: if isAdmin();
+      }
+
+      match /financialRecords/{recordId} {
+        allow read: if canAccessProject(projectId);
+        allow write: if isAdmin();
+      }
+
+      match /supplierDebts/{debtId} {
+        allow read: if canAccessProject(projectId);
+        allow write: if isAdmin();
+      }
+
+      match /workerPayments/{paymentId} {
+        allow read: if canAccessProject(projectId);
+        allow write: if isAdmin();
+      }
+    }
+  }
+}

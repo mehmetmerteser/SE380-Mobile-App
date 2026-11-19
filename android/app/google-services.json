@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "450215776",
+    "project_id": "constructly-se380",
+    "storage_bucket": "constructly-se380.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450215776:android:be98df1e1eb500fc062805",
+        "android_client_info": {
+          "package_name": "edu.ieu.se380.se380_mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYAiJwvwNFuCz0sKzG9S1bbr0MUPfEhWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
